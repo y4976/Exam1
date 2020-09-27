@@ -1,18 +1,32 @@
 <template>
     <div>
-        <vue-calender class="input-calender"/>
-        <vue-select class="input-select" :item-list="selectHourList"/>
-        <vue-select class="input-select" :item-list="selectMinuteList"/>
+        <datepicker class="input-calender"
+                    :value="selectedDate"
+                    :monday-first="true"
+                    calendar-button-icon="fas fa-caret-down"
+                    :disabled-dates="disabledDates"
+        >
+        </datepicker>
+        <vue-select class="input-select" :item-list="selectHourList" :selected-value="selectedHour"/>
+        <vue-select class="input-select" :item-list="selectMinuteList" :selected-value="selectedMinute"/>
     </div>
 </template>
 
 <script>
-    import VueCalender from "@/components/VueCalender";
     import VueSelect from "@/components/VueSelect";
+    import Datepicker from "@/components/vuejs-datepicker/src/components/Datepicker";
 
     export default {
         name: "VueTimePicker",
-        components: {VueSelect, VueCalender},
+        components: {Datepicker, VueSelect},
+        props: [
+            'time', 'disabledDates'
+        ],
+        mounted() {
+            this.selectedDate = this.$dateUtil.getDate(this.time);
+            this.selectedHour = Number(this.$dateUtil.getHour(this.time));
+            this.selectedMinute = Math.floor(this.$dateUtil.getMinutes(this.time) / 10) * 10;
+        },
         data() {
             return {
                 selectHourList: this.makeHourList(),
@@ -22,7 +36,12 @@
                     {value: 20, text: '20 분'},
                     {value: 30, text: '30 분'},
                     {value: 40, text: '40 분'},
-                ]
+                    {value: 50, text: '50 분'},
+                ],
+
+                selectedDate: 0,
+                selectedHour: 0,
+                selectedMinute: 0,
             }
         },
         methods: {
@@ -34,19 +53,23 @@
                     hourList[i] = {value: i, text: `${when} ${time}시`};
                 }
                 return hourList;
+            },
+
+            getSelectedTime() {
+                return this.$dateUtil.make(this.selectedDate, this.selectedHour, this.selectedMinute);
             }
-        }
+        },
     }
 </script>
 
 <style scoped>
     .input-calender {
-        width: 218px;
+        width: 202px;
         height: 44px;
     }
 
     .input-select {
-        width: 152px;
+        width: 136px;
         height: 44px;
         margin-left: 16px;
     }

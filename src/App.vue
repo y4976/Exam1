@@ -35,6 +35,7 @@
         letter-spacing: normal;
         color: #000000;
         padding-left: 16px;
+        padding-right: 16px;
 
         border-radius: 8px;
         border: solid 1px #dadbdf;
@@ -50,6 +51,28 @@
 
     .float-right {
         float: right !important;
+    }
+
+    button {
+        height: 44px;
+        background-color: #4CAF50; /* Green */
+        border: none;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+
+        border-radius: 8px;
+        outline:none;
+    }
+
+    button:hover {
+        cursor: pointer;
+    }
+
+    .down-button {
+        background: url('/src/assets/img/arrow.png') no-repeat 95% 50%;
     }
 
 </style>

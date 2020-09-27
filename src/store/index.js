@@ -3,10 +3,13 @@ import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
-// import session from './modules/session';
+import period from './modules/period';
+
+import DateUtil from '@/plugins/DateUtil';
+Vue.use(DateUtil);
 
 export default new Vuex.Store({
     modules: {
-        // session,
+        period,
     }
 });

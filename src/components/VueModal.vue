@@ -9,15 +9,12 @@
                 <slot name="content"/>
             </div>
 
-            <div id="footer" class="float-right">
+            <div id="footer" class="float-right float-bottom">
                 <slot name="footer"/>
-                <button type="button" id="cancel_button">취소</button>
-                <button type="button" class="btn-primary" id="ok_button">완료</button>
+                <button type="button" id="cancel_button" @click="hide">취소</button>
+                <button type="button" class="btn-primary" id="ok_button" @click="ok">완료</button>
             </div>
-
-<!--            <div class="modal-layer"></div>-->
         </div>
-
     </div>
 </template>
 
@@ -44,10 +41,13 @@
             show() {
                 this.$refs.modal.style.display = "block";
             },
-
             hide() {
                 this.$refs.modal.style.display = "none";
             },
+            ok() {
+                this.$emit('ok');
+                this.hide();
+            }
         }
     }
 </script>
@@ -70,8 +70,8 @@
         margin: 15% auto; /* 15% from the top and centered */
         border: 1px solid #888;
 
-        width: 824px;
-        height: 485px;
+        width: 654px;
+        height: 403px;
         border-radius: 8px;
         background-color: #ffffff;
 
@@ -95,17 +95,18 @@
 
     #cancel_button {
         width: 62px;
-        height: 44px;
-        border-radius: 8px;
+        color: black;
         border: solid 1px #dadbdf;
         background-color: rgba(255, 255, 255, 0);
+        margin-right: 12px;
     }
 
     #ok_button {
         width: 62px;
-        height: 44px;
-        border-radius: 8px;
         background-color: #4c80f1;
     }
 
+    #footer {
+        margin-top: 40px;
+    }
 </style>
