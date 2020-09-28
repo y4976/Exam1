@@ -1,5 +1,5 @@
 <template>
-    <select id="vue-select" name="job" v-model="selectedValue">
+    <select id="vue-select" name="job" :value="value" v-model="selectedValue">
         <slot name="test"/>
         <option v-for="item in itemList" :value="item.value">{{item.text}}</option>
     </select>
@@ -11,6 +11,9 @@
         props: [
             'itemList', 'value'
         ],
+        mounted() {
+            this.selectedValue = this.value;
+        },
         data() {
             return {
                 selectedValue: 0
@@ -46,9 +49,5 @@
     #vue-select * {
         height: 44px;
     }
-
-    /*select:hover{*/
-    /*    background-color: #f9f9f9;*/
-    /*}*/
 
 </style>

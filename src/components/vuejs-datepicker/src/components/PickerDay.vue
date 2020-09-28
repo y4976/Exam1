@@ -53,7 +53,9 @@ export default {
   data () {
     const constructedDateUtils = makeDateUtils(this.useUtc)
     return {
-      utils: constructedDateUtils
+      utils: constructedDateUtils,
+        startDate: 0,
+        endDate: 0
     }
   },
   computed: {
@@ -161,7 +163,14 @@ export default {
         this.$emit('selectedDisabled', date)
         return false
       }
-      this.$emit('selectDate', date)
+
+      if (date.timestamp < this.startDate) {
+          this.startDate = date.timestamp;
+          this.endDate = date.timestamp;
+          this.$emit('selectDate', date);
+      } else {
+          this.endDate = date.timestamp;
+      }
     },
     /**
      * @return {Number}
@@ -285,42 +294,45 @@ export default {
      * @return {Boolean}
      */
     isHighlightedDate (date) {
-      if (!(this.highlighted && this.highlighted.includeDisabled) && this.isDisabledDate(date)) {
-        return false
-      }
-
-      let highlighted = false
-
-      if (typeof this.highlighted === 'undefined') {
-        return false
-      }
-
-      if (typeof this.highlighted.dates !== 'undefined') {
-        this.highlighted.dates.forEach((d) => {
-          if (this.utils.compareDates(date, d)) {
-            highlighted = true
-            return true
-          }
-        })
-      }
-
-      if (this.isDefined(this.highlighted.from) && this.isDefined(this.highlighted.to)) {
-        highlighted = date >= this.highlighted.from && date <= this.highlighted.to
-      }
-
-      if (typeof this.highlighted.days !== 'undefined' && this.highlighted.days.indexOf(this.utils.getDay(date)) !== -1) {
-        highlighted = true
-      }
-
-      if (typeof this.highlighted.daysOfMonth !== 'undefined' && this.highlighted.daysOfMonth.indexOf(this.utils.getDate(date)) !== -1) {
-        highlighted = true
-      }
-
-      if (typeof this.highlighted.customPredictor === 'function' && this.highlighted.customPredictor(date)) {
-        highlighted = true
-      }
-
-      return highlighted
+      // if (!(this.highlighted && this.highlighted.includeDisabled) && this.isDisabledDate(date)) {
+      //   return false
+      // }
+      //
+      // let highlighted = false
+      //
+      // if (typeof this.highlighted === 'undefined') {
+      //   return false
+      // }
+      //
+      // if (typeof this.highlighted.dates !== 'undefined') {
+      //   this.highlighted.dates.forEach((d) => {
+      //     if (this.utils.compareDates(date, d)) {
+      //       highlighted = true
+      //       return true
+      //     }
+      //   })
+      // }
+      //
+      // if (this.isDefined(this.highlighted.from) && this.isDefined(this.highlighted.to)) {
+      //   highlighted = date >= this.highlighted.from && date <= this.highlighted.to
+      // }
+      //
+      // if (typeof this.highlighted.days !== 'undefined' && this.highlighted.days.indexOf(this.utils.getDay(date)) !== -1) {
+      //   highlighted = true
+      // }
+      //
+      // if (typeof this.highlighted.daysOfMonth !== 'undefined' && this.highlighted.daysOfMonth.indexOf(this.utils.getDate(date)) !== -1) {
+      //   highlighted = true
+      // }
+      //
+      // if (typeof this.highlighted.customPredictor === 'function' && this.highlighted.customPredictor(date)) {
+      //   highlighted = true
+      // }
+      //
+      // return highlighted
+      //   console.log('highlighted', date, this.startDate, this.endDate)
+        let timestamp = new Date(date).getTime();
+        return timestamp >= this.startDate && timestamp <= this.endDate;
     },
     dayClasses (day) {
       return {
@@ -368,8 +380,13 @@ export default {
      */
     isDefined (prop) {
       return typeof prop !== 'undefined' && prop
-    }
-  }
+    },
+      setPickerDate(start, end) {
+        // console.log('pickerday',start, end)
+          this.startDate = start;
+          this.endDate = end;
+      }
+  },
 }
 // eslint-disable-next-line
 ;

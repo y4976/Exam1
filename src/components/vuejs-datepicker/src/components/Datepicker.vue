@@ -51,8 +51,10 @@
       @changedMonth="handleChangedMonthFromDayPicker"
       @selectDate="selectDate"
       @showMonthCalendar="showMonthCalendar"
-      @selectedDisabled="selectDisabledDate">
+      @selectedDisabled="selectDisabledDate"
+      ref="pickerDay">
       <slot name="beforeCalendarHeader" slot="beforeCalendarHeader"></slot>
+
     </picker-day>
 
     <!-- Month View -->
@@ -246,6 +248,7 @@ export default {
      * @return {mixed}
      */
     showCalendar () {
+      this.$emit('opened');
       if (this.disabled || this.isInline) {
         return false
       }
@@ -349,9 +352,9 @@ export default {
      */
     selectDate (date) {
       this.setDate(date.timestamp)
-      if (!this.isInline) {
-        this.close(true)
-      }
+      // if (!this.isInline) {
+      //   this.close(true)
+      // }
       this.resetTypedDate = new Date()
     },
     /**
@@ -437,10 +440,11 @@ export default {
       this.showDayView = this.showMonthView = this.showYearView = false
       if (!this.isInline) {
         if (emitEvent) {
-          this.$emit('closed')
+          // this.$emit('closed', {startDate: this.$refs.pickerDay.startDate, endDate: this.$refs.pickerDay.endDate})
         }
         document.removeEventListener('click', this.clickOutside, false)
       }
+      this.$emit('closed', {startDate: this.$refs.pickerDay.startDate, endDate: this.$refs.pickerDay.endDate})
     },
     /**
      * Initiate the component
@@ -452,6 +456,12 @@ export default {
       if (this.isInline) {
         this.setInitialView()
       }
+    },
+    setSelectedDate(selectedDate) {
+      this.selectedDate = selectedDate;
+    },
+    setPickerDate(start, end) {
+      this.$refs.pickerDay.setPickerDate(start, end);
     }
   },
   mounted () {

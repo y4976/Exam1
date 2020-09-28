@@ -1,6 +1,6 @@
 <template>
     <div>
-        <button @click="clickedOpenButton">설정 대화상자 열기</button>
+        <button @click="$refs.periodModal.show()">설정 대화상자 열기</button>
         <period-modal ref="periodModal"/>
     </div>
 </template>
@@ -11,11 +11,6 @@
     export default {
         name: 'Home',
         components: {PeriodModal},
-        methods: {
-            clickedOpenButton() {
-                this.$refs.periodModal.show();
-            }
-        }
     }
 </script>
 

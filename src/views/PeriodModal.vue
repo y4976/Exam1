@@ -5,7 +5,7 @@
                 <span>응시 시작일</span>
             </div>
             <div>
-                <vue-time-picker :time="startDate" ref="startPicker"/>
+                <vue-time-picker :time="startDate" @openedCalender="openedCalender" @closedCalender="closedCalender" ref="startPicker"/>
             </div>
 
             <div class="divider"></div>
@@ -14,7 +14,7 @@
                 <span>응시 마감일</span>
             </div>
             <div>
-                <vue-time-picker :time="endDate" ref="endPicker"/>
+                <vue-time-picker :time="endDate" @openedCalender="openedCalender" @closedCalender="closedCalender" ref="endPicker"/>
             </div>
         </template>
     </vue-modal>
@@ -31,21 +31,34 @@
         name: 'PeriodModal',
         components: {VueTimePicker, VueModal},
         methods: {
+            ...periodStore.mapActions({
+                load: periodActions.LOAD_DATE,
+                saveDate: periodActions.SAVE_DATE
+            }),
             show() {
                 this.load();
+                this.$refs.startPicker.load(this.startDate);
+                this.$refs.endPicker.load(this.endDate);
                 this.$refs.modal.show();
             },
             hide() {
                 this.$refs.modal.hide();
             },
-            ...periodStore.mapActions({
-                load: periodActions.LOAD_DATE,
-                saveDate: periodActions.SAVE_DATE
-            }),
             save() {
                 let period = {startDate: this.$refs.startPicker.getSelectedTime(), endDate: this.$refs.endPicker.getSelectedTime()};
                 this.saveDate(period);
             },
+            openedCalender() {
+                let start = new Date(this.$dateUtil.getDate(this.$refs.startPicker.getSelectedTime())).getTime();
+                let end = new Date(this.$dateUtil.getDate(this.$refs.endPicker.getSelectedTime())).getTime();
+
+                this.$refs.startPicker.setPickerDate(start, end);
+                this.$refs.endPicker.setPickerDate(start, end);
+            },
+            closedCalender(period) {
+                this.$refs.startPicker.setSelectedDate(new Date(period.startDate));
+                this.$refs.endPicker.setSelectedDate(new Date(period.endDate));
+            }
         },
         computed: {
             ...periodStore.mapState({
