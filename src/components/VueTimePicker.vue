@@ -10,8 +10,8 @@
                     ref="datepicker"
         >
         </datepicker>
-        <vue-select class="input-select" :item-list="hourList" :value="selectedHour" ref="hour"/>
-        <vue-select class="input-select" :item-list="minuteList" :value="selectedMinute" ref="minute"/>
+        <vue-select class="input-select" :item-list="hourList" v-model="selectedHour"/>
+        <vue-select class="input-select" :item-list="minuteList" v-model="selectedMinute"/>
     </div>
 </template>
 
@@ -35,6 +35,8 @@
                 ],
 
                 selectedDate: 0,
+                selectedHour: 0,
+                selectedMinute: 0,
 
                 time: 0,
                 componentKey: 0
@@ -44,6 +46,8 @@
             load(time) {
                 this.time = time;
                 this.selectedDate = this.$dateUtil.getDate(time);
+                this.selectedHour = Number(this.$dateUtil.getHour(this.time));
+                this.selectedMinute = Math.floor(this.$dateUtil.getMinutes(this.time) / 10) * 10;
                 this.componentKey++;
             },
 
@@ -58,7 +62,7 @@
             },
 
             getSelectedTime() {
-                return this.$dateUtil.make(this.selectedDate, this.$refs.hour.selectedValue, this.$refs.minute.selectedValue);
+                return this.$dateUtil.make(this.selectedDate, this.selectedHour, this.selectedMinute);
             },
 
             openedCalender() {
@@ -87,12 +91,6 @@
                     // },
                 }
             },
-            selectedHour() {
-                return Number(this.$dateUtil.getHour(this.time));
-            },
-            selectedMinute() {
-                return Math.floor(this.$dateUtil.getMinutes(this.time) / 10) * 10;
-            }
         }
     }
 </script>
