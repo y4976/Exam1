@@ -457,9 +457,6 @@ export default {
         this.setInitialView()
       }
     },
-    setSelectedDate(selectedDate) {
-      this.selectedDate = selectedDate;
-    },
     setPickerDate(start, end) {
       this.$refs.pickerDay.setPickerDate(start, end);
     }

@@ -1,7 +1,7 @@
 <template>
     <select id="vue-select" name="job" :value="value" @input="changed">
         <slot name="test"/>
-        <option v-for="item in itemList" :value="item.value">{{item.text}}</option>
+        <option v-for="item in selectItemList" :value="item.value">{{item.text}}</option>
     </select>
 </template>
 
@@ -9,16 +9,11 @@
     export default {
         name: "VueSelect",
         props: [
-            'itemList', 'value'
+            'selectItemList', 'value'
         ],
-        data() {
-            return {
-                selectedValue: 0
-            }
-        },
         methods: {
-            changed($event) {
-                this.$emit('input', $event.target.value);
+            changed(event) {
+                this.$emit('changed', event.target.value);
             },
         }
     }

@@ -1,18 +1,20 @@
 <template>
-    <div id="modal" ref="modal">
-        <div id="modal-body">
-            <div id="header">
-                {{title}}
-            </div>
+    <div v-if="isShowModal">
+        <div id="modal" @click.self="hide">
+            <div id="modal-overlay">
+                <div id="modal-header">
+                    {{title}}
+                </div>
 
-            <div id="content">
-                <slot name="content"/>
-            </div>
+                <div id="modal-content">
+                    <slot name="content"/>
+                </div>
 
-            <div id="footer" class="float-right float-bottom">
-                <slot name="footer"/>
-                <button type="button" id="cancel_button" @click="hide">취소</button>
-                <button type="button" class="btn-primary" id="ok_button" @click="ok">완료</button>
+                <div id="modal-footer" class="float-right float-bottom">
+                    <slot name="footer"/>
+                    <button type="button" id="cancel_button" @click="hide">취소</button>
+                    <button type="button" class="btn-primary" id="ok_button" @click="ok">완료</button>
+                </div>
             </div>
         </div>
     </div>
@@ -25,25 +27,22 @@
         props: [
             'title'
         ],
-        created() {
-            window.onclick = function(event) {
-                let modal = document.getElementById("modal");
-                if (event.target === modal) {
-                    modal.style.display = "none";
-                }
-            }
-        },
         data() {
             return {
+                isShowModal: false
             }
         },
         methods: {
             show() {
-                this.$refs.modal.style.display = "block";
+                this.$emit('show');
+                this.isShowModal = true;
             },
+
             hide() {
-                this.$refs.modal.style.display = "none";
+                this.$emit('hide');
+                this.isShowModal = false;
             },
+
             ok() {
                 this.$emit('ok');
                 this.hide();
@@ -54,7 +53,7 @@
 
 <style scoped>
     #modal {
-        display: none; /* Hidden by default */
+        display: block;
         position: fixed; /* Stay in place */
         z-index: 1; /* Sit on top */
         left: 0;
@@ -66,7 +65,7 @@
     }
 
     /* Modal Content/Box */
-    #modal-body {
+    #modal-overlay {
         margin: 15% auto; /* 15% from the top and centered */
         border: 1px solid #888;
 
@@ -78,11 +77,7 @@
         padding: 40px 84px;
     }
 
-    #content {
-        padding-top: 56px;
-    }
-
-    #header {
+    #modal-header {
         height: 44px;
         font-size: 32px;
         font-weight: bold;
@@ -91,6 +86,14 @@
         line-height: 1.38;
         letter-spacing: normal;
         color: #333333;
+    }
+
+    #modal-content {
+        padding-top: 56px;
+    }
+
+    #modal-footer {
+        margin-top: 40px;
     }
 
     #cancel_button {
@@ -106,7 +109,4 @@
         background-color: #4c80f1;
     }
 
-    #footer {
-        margin-top: 40px;
-    }
 </style>

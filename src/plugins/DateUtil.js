@@ -16,6 +16,9 @@ DateUtil.install = function(Vue, options){
         getMinutes(time) {
             return moment(time).format('mm');
         },
+        getDateUnixTime(time) {
+            return new Date(moment(time).format('YYYY-MM-DD')).getTime();
+        },
         isBefore(time, condition) {
             return moment(time).isBefore(moment(condition));
         },

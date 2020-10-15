@@ -1,11 +1,11 @@
 <template>
-    <vue-modal title="응시 기간 설정" ref="modal" @ok="save">
+    <vue-modal title="응시 기간 설정" @show="loadDate" @ok="saveDate" ref="modal">
         <template v-slot:content>
             <div class="sub-title">
                 <span>응시 시작일</span>
             </div>
             <div>
-                <vue-time-picker :time="startDate" @openedCalender="openedCalender" @closedCalender="closedCalender" ref="startPicker"/>
+                <vue-time-picker :value="startDate" @changed="setViewStartDate"/>
             </div>
 
             <div class="divider"></div>
@@ -14,7 +14,7 @@
                 <span>응시 마감일</span>
             </div>
             <div>
-                <vue-time-picker :time="endDate" @openedCalender="openedCalender" @closedCalender="closedCalender" ref="endPicker"/>
+                <vue-time-picker :value="endDate" @changed="setViewEndDate"/>
             </div>
         </template>
     </vue-modal>
@@ -23,6 +23,7 @@
 <script>
     import * as periodStore from '@/store/modules/period';
     import * as periodActions from '@/store/modules/period/actions';
+    import * as periodMutations from '@/store/modules/period/mutations';
 
     import VueModal from "@/components/VueModal";
     import VueTimePicker from "@/components/VueTimePicker";
@@ -32,38 +33,23 @@
         components: {VueTimePicker, VueModal},
         methods: {
             ...periodStore.mapActions({
-                load: periodActions.LOAD_DATE,
+                loadDate: periodActions.LOAD_DATE,
                 saveDate: periodActions.SAVE_DATE
             }),
-            show() {
-                this.load();
-                this.$refs.startPicker.load(this.startDate);
-                this.$refs.endPicker.load(this.endDate);
+
+            ...periodStore.mapMutations({
+                setViewStartDate: periodMutations.SET_VIEW_START_DATE,
+                setViewEndDate: periodMutations.SET_VIEW_END_DATE,
+            }),
+
+            showModal() {
                 this.$refs.modal.show();
             },
-            hide() {
-                this.$refs.modal.hide();
-            },
-            save() {
-                let period = {startDate: this.$refs.startPicker.getSelectedTime(), endDate: this.$refs.endPicker.getSelectedTime()};
-                this.saveDate(period);
-            },
-            openedCalender() {
-                let start = new Date(this.$dateUtil.getDate(this.$refs.startPicker.getSelectedTime())).getTime();
-                let end = new Date(this.$dateUtil.getDate(this.$refs.endPicker.getSelectedTime())).getTime();
-
-                this.$refs.startPicker.setPickerDate(start, end);
-                this.$refs.endPicker.setPickerDate(start, end);
-            },
-            closedCalender(period) {
-                this.$refs.startPicker.setSelectedDate(new Date(period.startDate));
-                this.$refs.endPicker.setSelectedDate(new Date(period.endDate));
-            }
         },
         computed: {
             ...periodStore.mapState({
-                startDate: (state) => state.startDate,
-                endDate: (state) => state.endDate,
+                startDate: (state) => state.views.startDate,
+                endDate: (state) => state.views.endDate,
             }),
         }
     }
